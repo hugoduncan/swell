@@ -28,7 +28,7 @@ versions of their CL brethren.
 ## Status
 
 Not released, no jar pushed yet. Requires slingshot from
-`issue-3-implement-throw-hook` branch of my slignshot clone.
+`issue-3-implement-throw-hook` branch of my slingshot clone.
 
 ## License
 

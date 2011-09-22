@@ -17,8 +17,8 @@
 (defn fn-with-restart
   []
   (swell/restart-case
-   [restart1 (fn [_] :yes)
-    :restart2 (fn [_] :no)]
+   [restart1 (fn [] :yes)
+    :restart2 (fn [] :no)]
    (slingshot/throw+ ::e)))
 
 (deftest unhandled-exception-test
@@ -27,9 +27,15 @@
 
 (deftest with-exception-scope-test
   (is (thrown? slingshot.Stone
-               (swell/with-exception-scope
+               (swell/with-exception-scope []
                  (slingshot/throw+ :anything)))
       "with-exception-scope should compile"))
+
+(deftest invoke-exception-test
+  (is (thrown? slingshot.Stone
+               (swell-slingshot/unwind-to-invoke-restart 'restart1)))
+  (is (thrown? slingshot.Stone
+               (swell/invoke-restart 'restart1))))
 
 (deftest invoke-restart-test
   (letfn [(f []
@@ -52,7 +58,7 @@
 (deftest restart-test
   (is (= :yes
          (swell/handler-bind
-          [keyword? (fn invoke-restart1 [e] (swell/invoke-restart 'restart1 e))]
+          [keyword? (fn invoke-restart1 [_] (swell/invoke-restart 'restart1))]
           (fn-with-restart)))
       "binding to arbitrary function")
   (is (= :yes
@@ -65,3 +71,23 @@
           [keyword? :restart2]
           (fn-with-restart)))
       "binding to restart keyword"))
+
+(deftest nested-handler-case-test
+  (is (= 4
+         (swell/handler-bind
+          [keyword? :restart2]
+          (swell/restart-case
+           [restart1 (fn [] 1)]
+           (inc
+            (swell/restart-case
+             [:restart2 (fn [] 3)]
+             (slingshot/throw+ ::e)))))))
+  (is (= 1
+         (swell/handler-bind
+          [keyword? 'restart1]
+          (swell/restart-case
+           [restart1 (fn [] 1)]
+           (inc
+            (swell/restart-case
+             [:restart2 (fn [] 3)]
+             (slingshot/throw+ ::e))))))))

@@ -10,3 +10,9 @@
   ^{:dynamic true
     :doc "Restarts bound for current thread. Part of the dynamic environment."}
   *restarts* {})
+
+(def
+  ^{:dynamic true
+    :doc "Restarts bound for current thread and scope. Part of the dynamic
+          environment."}
+  *scope-restarts* nil)
