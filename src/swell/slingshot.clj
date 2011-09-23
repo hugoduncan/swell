@@ -50,10 +50,19 @@
        (spi/scope-restarts)
        (handler context-map))]))
 
+(defn unhandled-hook
+  [context-map]
+  (when-let [[restart & args] (spi/on-unhandled-hook
+                               (-> context-map meta :throwable))]
+    [nil (try-with-restarts
+           (spi/scope-restarts)
+           (apply (spi/find-restart restart) args))]))
+
 (defn on-catch
   [context-map]
   (or
    (handle context-map)
+   (unhandled-hook context-map)
    [context-map nil]))
 
 (alter-var-root #'slingshot/*catch-hook* (fn [a b] b) on-catch)

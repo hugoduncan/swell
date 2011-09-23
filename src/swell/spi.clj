@@ -54,3 +54,15 @@
   [restarts & body]
   `(binding [internal/*scope-restarts* (set ~restarts)]
      ~@body))
+
+(def ^{:dynamic true
+       :doc "A hook that tooling can bind to provide interactive restart
+             selection. Should return a vector with restart name and any
+             arguments."}
+  *unhandled-hook* nil)
+
+(defn on-unhandled-hook
+  "Call hook for unhandled exception"
+  [e]
+  (when (and *unhandled-hook* (scope-restarts))
+    (*unhandled-hook* e (scope-restarts))))

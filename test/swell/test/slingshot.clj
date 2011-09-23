@@ -91,3 +91,19 @@
             (swell/restart-case
              [:restart2 (fn [] 3)]
              (slingshot/throw+ ::e))))))))
+
+(defn simple-unhandled-handler
+  [e restarts]
+  [(first restarts)])
+
+(deftest unhandled-test
+  (binding [swell.spi/*unhandled-hook* simple-unhandled-handler]
+    (is
+     (=
+      4
+      (swell.api/restart-case
+       [restart1 (fn [] 1)]
+       (inc
+        (swell.api/restart-case
+         [:restart2 (fn [] 3)]
+         (slingshot.core/throw+ ::e))))))))
