@@ -15,14 +15,17 @@ Provides `handler-bind`, `restart-case` and `invoke-restart` which are clojure
 versions of their CL brethren.
 
 ```clojure
-    (require '[swell.api :as api])
+    (require '[swell.api :as swell])
 
-    (swell/handler-bind
-      [keyword? :restart2]
-      (swell/restart-case
-          [restart1 (fn [_] :yes)
-           :restart2 (fn [_] :no)]
-        (slingshot/throw+ ::e)))
+    (let [f (fn []
+            (swell/restart-case
+             [restart1 (fn [] 1)]
+             (inc
+              (swell/restart-case
+               [:restart2 (fn [] 3)]
+               (slingshot/throw+ ::e)))))]
+      (is (= 4 (swell/handler-bind [keyword? :restart2] (f))))
+      (is (= 1 (swell/handler-bind [keyword? 'restart1] (f)))))
 ```
 
 ## Status

@@ -73,24 +73,15 @@
       "binding to restart keyword"))
 
 (deftest nested-handler-case-test
-  (is (= 4
-         (swell/handler-bind
-          [keyword? :restart2]
-          (swell/restart-case
-           [restart1 (fn [] 1)]
-           (inc
+  (let [f (fn []
             (swell/restart-case
-             [:restart2 (fn [] 3)]
-             (slingshot/throw+ ::e)))))))
-  (is (= 1
-         (swell/handler-bind
-          [keyword? 'restart1]
-          (swell/restart-case
-           [restart1 (fn [] 1)]
-           (inc
-            (swell/restart-case
-             [:restart2 (fn [] 3)]
-             (slingshot/throw+ ::e))))))))
+             [restart1 (fn [] 1)]
+             (inc
+              (swell/restart-case
+               [:restart2 (fn [] 3)]
+               (slingshot/throw+ ::e)))))]
+    (is (= 4 (swell/handler-bind [keyword? :restart2] (f))))
+    (is (= 1 (swell/handler-bind [keyword? 'restart1] (f))))))
 
 (defn simple-unhandled-handler
   [e restarts]
