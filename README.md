@@ -31,7 +31,7 @@ versions of their CL brethren.
 To use in your project add the following to your project.clj `:dependencies`:
 
 ```clojure
-    [swell "0.1.0-SNAPSHOT]
+    [swell "0.1.0-SNAPSHOT"]
 ```
 
 ## Status
