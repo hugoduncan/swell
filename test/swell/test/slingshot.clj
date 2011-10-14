@@ -11,7 +11,7 @@
        :yes
        (slingshot/try+
         (slingshot/throw+ ^{:type :abc} {})
-        (catch {nil :abc} m :yes)))
+        (catch #(isa? :abc (type %)) _ :yes)))
       "basic slingshot usage should still work"))
 
 (defn fn-with-restart
@@ -52,8 +52,8 @@
         "calling unwind-to-invoke-restart should return restart values")))
 
 (deftest catches?-test
-  (is (swell-slingshot/catches? {:obj (Exception.)} Exception))
-  (is (swell-slingshot/catches? {:obj ::a} keyword?)))
+  (is (swell-slingshot/catches? {:object (Exception.)} Exception))
+  (is (swell-slingshot/catches? {:object ::a} keyword?)))
 
 (deftest restart-test
   (is (= :yes

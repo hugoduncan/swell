@@ -28,10 +28,15 @@ versions of their CL brethren.
       (is (= 1 (swell/handler-bind [keyword? 'restart1] (f)))))
 ```
 
+To use in your project add the following to your project.clj `:dependencies`:
+
+```clojure
+    [swell "0.1.0-SNAPSHOT]
+```
+
 ## Status
 
-Not released, no jar pushed yet. Requires slingshot from
-`issue-3-implement-throw-hook` branch of my slingshot clone.
+Not released yet.
 
 ## License
 
