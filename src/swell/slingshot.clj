@@ -1,7 +1,7 @@
 (ns swell.slingshot
   "Slingshot bindings for swell."
   (:require
-   [slingshot.core :as slingshot]
+   [slingshot.slingshot :as slingshot]
    [slingshot.support :as support]
    [swell.spi :as spi]))
 
@@ -12,7 +12,7 @@
     (catch #(isa? :swell/invoke-restart (type %)) e#
       (if (~restarts (:restart e#))
         (apply spi/invoke-restart (:restart e#) (:args e#))
-        (throw (-> ~'&throw-context meta :throwable))))))
+        (throw (-> ~'&throw-context :throwable))))))
 
 (defmacro with-exception-scope [restarts & body]
   `(spi/with-scope-restarts [~@restarts]
@@ -49,7 +49,7 @@
 (defn unhandled-hook
   [context-map]
   (when-let [[restart & args] (spi/on-unhandled-hook
-                               (-> context-map meta :throwable))]
+                               (-> context-map :throwable))]
     [true
      (try-with-restarts
        (spi/scope-restarts)
@@ -60,7 +60,7 @@
   (if-let [[handled return-value] (or
                                    (handle context-map)
                                    (unhandled-hook context-map))]
-    (vary-meta context-map assoc :catch-hook-return return-value)
+    (assoc context-map :catch-hook-return return-value)
     context-map))
 
 (alter-var-root #'support/*catch-hook* (fn [a b] b) on-catch)
