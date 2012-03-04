@@ -2,9 +2,10 @@
   (:require
    [swell.slingshot :as swell-slingshot]
    [swell.api :as swell]
-   [slingshot.core :as slingshot])
+   [slingshot.slingshot :as slingshot])
   (:use
-   [clojure.test]))
+   clojure.test
+   swell.test.slingshot-test-helpers))
 
 (deftest slingshot-test
   (is (=
@@ -22,20 +23,21 @@
    (slingshot/throw+ ::e)))
 
 (deftest unhandled-exception-test
-  (is (thrown? slingshot.Stone (fn-with-restart))
-      "restart-case should not interfere with exceptions"))
+  (testing "restart-case should not interfere with exceptions"
+    (is-thrown-slingshot?
+      (fn-with-restart))))
 
 (deftest with-exception-scope-test
-  (is (thrown? slingshot.Stone
-               (swell/with-exception-scope []
-                 (slingshot/throw+ :anything)))
-      "with-exception-scope should compile"))
+  (testing "with-exception-scope should compile"
+    (is-thrown-slingshot?
+      (swell/with-exception-scope []
+        (slingshot/throw+ :anything)))))
 
 (deftest invoke-exception-test
-  (is (thrown? slingshot.Stone
-               (swell-slingshot/unwind-to-invoke-restart 'restart1)))
-  (is (thrown? slingshot.Stone
-               (swell/invoke-restart 'restart1))))
+  (is-thrown-slingshot?
+    (swell-slingshot/unwind-to-invoke-restart 'restart1))
+  (is-thrown-slingshot?
+    (swell/invoke-restart 'restart1)))
 
 (deftest invoke-restart-test
   (letfn [(f []
@@ -97,4 +99,4 @@
        (inc
         (swell.api/restart-case
          [:restart2 (fn [] 3)]
-         (slingshot.core/throw+ ::e))))))))
+         (slingshot.slingshot/throw+ ::e))))))))
