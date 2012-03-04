@@ -15,23 +15,56 @@ Provides `handler-bind`, `restart-case` and `invoke-restart` which are clojure
 versions of their CL brethren.
 
 ```clojure
-    (require '[swell.api :as api])
+    (require '[swell.api :as swell])
 
-    (swell/handler-bind
-      [keyword? :restart2]
-      (swell/restart-case
-          [restart1 (fn [_] :yes)
-           :restart2 (fn [_] :no)]
-        (slingshot/throw+ ::e)))
+    (let [f (fn []
+            (swell/restart-case
+             [restart1 (fn [] 1)]
+             (inc
+              (swell/restart-case
+               [:restart2 (fn [] 3)]
+               (slingshot/throw+ ::e)))))]
+      (is (= 4 (swell/handler-bind [keyword? :restart2] (f))))
+      (is (= 1 (swell/handler-bind [keyword? 'restart1] (f)))))
 ```
 
-## Status
+To use in your project add the following to your project.clj `:dependencies`:
 
-Not released, no jar pushed yet. Requires slingshot from
-`issue-3-implement-throw-hook` branch of my slignshot clone.
+```clojure
+    [swell "0.1.0-SNAPSHOT"]
+```
+
+## project.clj
+
+Swell is released to clojars. To use in your project, add the following to your
+`dependencies`:
+
+```clj
+[swell "0.1.0"]
+```
+
+## pom.xml
+To use in your pom, add the following to your `<dependencies>`:
+
+```xml
+<dependency>
+  <groupId>swell</groupId>
+  <artifactId>swell</artifactId>
+  <version>0.1.0</version>
+</dependency>
+```
+
+and the following to your `<repositories>`:
+
+``` xml
+<repository>
+  <id>clojars</id>
+  <url>http://clojars.org/repo</url>
+</repository>
+```
 
 ## License
 
-Copyright (C) 2011 Hugo Duncan
+Copyright (C) 2011, 2012 Hugo Duncan
 
 Distributed under the Eclipse Public License.
