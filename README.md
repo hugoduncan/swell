@@ -34,12 +34,37 @@ To use in your project add the following to your project.clj `:dependencies`:
     [swell "0.1.0-SNAPSHOT"]
 ```
 
-## Status
+## project.clj
 
-Not released yet.
+Swell is released to clojars. To use in your project, add the following to your
+`dependencies`:
+
+```clj
+[swell "0.1.0"]
+```
+
+## pom.xml
+To use in your pom, add the following to your `<dependencies>`:
+
+```xml
+<dependency>
+  <groupId>swell</groupId>
+  <artifactId>swell</artifactId>
+  <version>0.1.0</version>
+</dependency>
+```
+
+and the following to your `<repositories>`:
+
+``` xml
+<repository>
+  <id>clojars</id>
+  <url>http://clojars.org/repo</url>
+</repository>
+```
 
 ## License
 
-Copyright (C) 2011 Hugo Duncan
+Copyright (C) 2011, 2012 Hugo Duncan
 
 Distributed under the Eclipse Public License.
