@@ -19,7 +19,7 @@
   [] internal/*restarts*)
 
 (defn scope-restarts
-  "Map of currently bound restarts"
+  "Set of currently bound restarts"
   [] internal/*scope-restarts*)
 
 (defn find-restart
@@ -30,7 +30,7 @@
 (defn invoke-restart
   "Calls the function associated with restart, passing arguments to it. Restart
    must be valid in the current dynamic environment."
-  [restart & args]
+  [restart args]
   (if-let [f (find-restart restart)]
     (apply f args)
     (throw

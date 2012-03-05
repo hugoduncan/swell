@@ -53,4 +53,3 @@
          ~@body))))
 
 (def find-restart #'swell.spi/find-restart)
-;; (def invoke-restart #'swell.spi/invoke-restart)

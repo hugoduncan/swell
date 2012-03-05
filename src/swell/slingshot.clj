@@ -5,13 +5,16 @@
    [slingshot.support :as support]
    [swell.spi :as spi]))
 
+(defn is-restart? [obj]
+  (isa? :swell/invoke-restart (type obj)))
+
 (defmacro try-with-restarts
   [restarts & body]
   `(slingshot/try+
     ~@body
-    (catch #(isa? :swell/invoke-restart (type %)) e#
+    (catch is-restart? e#
       (if (~restarts (:restart e#))
-        (apply spi/invoke-restart (:restart e#) (:args e#))
+        (spi/invoke-restart (:restart e#) (:args e#))
         (throw (-> ~'&throw-context :throwable))))))
 
 (defmacro with-exception-scope [restarts & body]
@@ -48,7 +51,7 @@
 
 (defn unhandled-hook
   [context-map]
-  (when-let [[restart & args] (spi/on-unhandled-hook
+  (when-let [[restart args] (spi/on-unhandled-hook
                                (-> context-map :throwable))]
     [true
      (try-with-restarts
