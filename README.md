@@ -7,7 +7,8 @@ restarts in clojure will be limited to catch points defined within clojure.
 Swell initially targets catch points defined using
 [slingshot](https://github.com/scgilardi/slingshot).
 
-For an introduction to restarts in CL, see [PCL](http://www.gigamonkeys.com/book/beyond-exception-handling-conditions-and-restarts.html).
+For an introduction to restarts in CL, see
+[PCL](http://www.gigamonkeys.com/book/beyond-exception-handling-conditions-and-restarts.html).
 
 ## Usage
 

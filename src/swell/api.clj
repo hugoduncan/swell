@@ -29,9 +29,14 @@
 
 (defmacro handler-bind
   "Executes body in a dynamic environment where the indicated handler bindings
-   are in effect. Each binding value is a funtions of one argument (the
-   exception), or a restart name (which will invoke the restart with no
-   arguments."
+are in effect. Each binding value is a funtions of one argument (the
+exception), or a restart name (which will invoke the restart with no
+arguments.
+
+    (handler-bind
+      [keyword? :restart2
+       RuntimeException 'restart1]
+      (f))"
   [bindings & body]
   `(binding [internal/*handlers* (merge
                                   internal/*handlers*
@@ -40,7 +45,15 @@
 
 (defmacro restart-case
   "Evaluates body in a dynamic environment where control may be transferred to
-   the restarts specified"
+the restarts specified.
+
+Each binding is from something Named to a function with no arguments
+that is passed the exeception.
+
+    (restart-case
+      [:return-3 (fn [] 3)
+       'return-4 (fn [] 4)]
+      (do-something))"
   [bindings & body]
   (let [restarts (into {}
                        (map
@@ -52,4 +65,6 @@
        (with-exception-scope ~(keys restarts)
          ~@body))))
 
-(def find-restart #'swell.spi/find-restart)
+(def ^{:doc "Finds restart in the current dynamic environment."
+       :arglists (:arglists (meta #'swell.spi/find-restart))}
+  find-restart #'swell.spi/find-restart)
