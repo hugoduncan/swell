@@ -30,18 +30,14 @@ versions of their CL brethren.
 
 To use in your project add the following to your project.clj `:dependencies`:
 
-```clojure
-    [swell "0.1.0-SNAPSHOT"]
-```
+[![Clojars Project](http://clojars.org/swell/latest-version.svg)](http://clojars.org/swell)
 
 ## project.clj
 
 Swell is released to clojars. To use in your project, add the following to your
 `dependencies`:
 
-```clj
-[swell "0.1.0"]
-```
+[![Clojars Project](http://clojars.org/swell/latest-version.svg)](http://clojars.org/swell)
 
 ## pom.xml
 To use in your pom, add the following to your `<dependencies>`:
